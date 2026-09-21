@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="theme-color" content="#000000" />
+    <title>CipherPort Admin</title>
+    <meta name="description" content="CipherPort password manager admin interface" />
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwNzFiMTciLz4KICA8cGF0aCBkPSJNMTkgMjl2LTVjMC04IDUtMTMgMTMtMTNzMTMgNSAxMyAxM3Y1IiBmaWxsPSJub25lIiBzdHJva2U9IiNiN2Y0NGEiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHJlY3QgeD0iMTMiIHk9IjI3IiB3aWR0aD0iMzgiIGhlaWdodD0iMjciIHJ4PSI3IiBmaWxsPSIjYjdmNDRhIi8+CiAgPGNpcmNsZSBjeD0iMzIiIGN5PSIzOSIgcj0iNCIgZmlsbD0iIzA3MWIxNyIvPgogIDxwYXRoIGQ9Ik0zMiA0MnY2IiBzdHJva2U9IiMwNzFiMTciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=" type="image/svg+xml" />
+    <style>:root {
+  color-scheme: dark;
+  --ink: #f2f5ef;
+  --muted: #79a98c;
+  --line: #225c3d;
+  --paper: #050806;
+  --white: #090d0a;
+  --forest: #000000;
+  --forest-2: #07130c;
+  --mint: #00e889;
+  --mint-dark: #00bd70;
+  --aqua: #071a10;
+  --orange: #ff6868;
+  --shadow: 0 20px 55px rgba(0, 0, 0, 0.42);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; min-width: 320px; min-height: 100vh; color: var(--ink); background: var(--paper); }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+button:not(:disabled) { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(93, 142, 19, .25); outline-offset: 2px; }
+
+.app-shell { min-height: 100vh; display: grid; grid-template-columns: 232px minmax(0, 1fr); }
+.sidebar { position: fixed; inset: 0 auto 0 0; width: 232px; z-index: 20; display: flex; flex-direction: column; padding: 28px 18px 20px; color: var(--ink); background: var(--forest); border-right: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; color: inherit; text-decoration: none; }
+.brand-logo { width: 38px; height: 38px; object-fit: contain; flex: 0 0 auto; }
+.brand strong, .brand small { display: block; }
+.brand strong { font-size: 12px; letter-spacing: .06em; white-space: nowrap; }
+.brand small { margin-top: 3px; color: var(--muted); font: 9px/1.1 ui-monospace, monospace; letter-spacing: .18em; }
+
+.nav-list { margin-top: 48px; display: grid; gap: 7px; }
+.nav-item { width: 100%; border: 1px solid transparent; border-radius: 2px; padding: 12px; display: block; color: var(--muted); background: transparent; text-align: left; font-size: 14px; transition: .18s ease; }
+.nav-item:hover { color: #eef8f4; background: rgba(255,255,255,.055); }
+.nav-item.is-active { color: var(--forest); background: var(--mint); border-color: var(--mint); font-weight: 750; }
+.eyebrow { margin: 0 0 6px; color: #6a7a76; font: 700 11px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .09em; text-transform: uppercase; }
+.pulse-dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px rgba(183,244,74,.12); animation: pulse 2.4s infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(183,244,74,0); } }
+.project-meta { margin-top: auto; padding: 16px 0 14px; border-top: 1px solid rgba(255,255,255,.1); display: grid; gap: 7px; }
+.project-meta a, .project-meta span { overflow: hidden; color: #78958d; font: 9px/1.35 ui-monospace, monospace; text-overflow: ellipsis; white-space: nowrap; }
+.project-meta .project-label { color: #d4e1dd; font-weight: 700; }
+.project-meta a { color: #b8cbc5; text-decoration: none; }
+.project-meta a:hover { color: var(--mint); text-decoration: underline; }
+.sidebar-lock { width: 100%; min-height: 58px; border: 1px solid var(--orange); border-radius: 2px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 11px; color: #120404; background: var(--orange); text-align: left; }
+.sidebar-lock:hover { background: #ff8585; }
+.sidebar-lock .lock-kicker { padding: 5px 6px; border: 1px solid rgba(0,0,0,.5); font: 800 9px/1 ui-monospace, monospace; letter-spacing: .1em; }
+.sidebar-lock strong, .sidebar-lock small { display: block; }
+.sidebar-lock strong { font-size: 13px; }
+.sidebar-lock small { margin-top: 3px; font-size: 10px; opacity: .72; }
+.nav-scrim { display: none; }
+
+.main-content { grid-column: 2; min-width: 0; }
+.topbar { height: 74px; padding: 0 34px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 18px; background: rgba(5,8,6,.94); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 10; }
+.connection-copy { display: flex; align-items: center; }
+.connection-copy strong, .connection-copy small { display: block; }
+.connection-copy strong { font-size: 13px; }
+.connection-copy small { margin-top: 2px; color: var(--muted); font-size: 11px; }
+.session-time { margin-left: auto; border: 1px solid transparent; border-radius: 2px; padding: 7px 9px; display: flex; align-items: baseline; gap: 8px; color: inherit; background: transparent; }
+.session-time:hover { border-color: var(--line); background: #07130c; }
+.session-time small { color: var(--muted); font-size: 11px; }
+.session-time strong { font: 700 14px ui-monospace, monospace; }
+.session-time span { color: var(--mint); font-size: 10px; font-weight: 750; }
+.icon-button { width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: var(--white); font-weight: 800; }
+.mobile-menu { display: none; border: 0; background: transparent; font-size: 22px; }
+
+.view { display: none; padding: 34px; }
+.view.is-active { display: block; animation: view-in .25s ease; }
+@keyframes view-in { from { opacity: 0; transform: translateY(5px); } }
+.page-heading { min-height: 74px; display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; position: sticky; top: 74px; z-index: 9; margin: -34px -34px 0; padding: 34px 34px 18px; border-bottom: 1px solid var(--line); background: rgba(5, 8, 6, .97); backdrop-filter: blur(14px); }
+.page-heading h1 { margin: 0; font-size: clamp(28px, 3vw, 40px); line-height: 1; letter-spacing: -.04em; }
+.page-heading p:not(.eyebrow) { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+.primary-button, .secondary-button { min-height: 42px; border-radius: 9px; padding: 0 16px; font-weight: 750; }
+.primary-button { border: 1px solid var(--mint); color: var(--forest); background: var(--mint); box-shadow: none; }
+.primary-button:hover { background: #22f09a; }
+.secondary-button { border: 1px solid var(--line); background: var(--white); }
+.secondary-button:hover:not(:disabled) { border-color: var(--mint); }
+.secondary-button:disabled { color: #53715e; background: #08110b; }
+.full { width: 100%; }
+
+.security-note { margin: 26px 0 18px; padding: 13px 16px; border: 1px solid var(--line); display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 11px; background: var(--aqua); }
+.security-note .shield-icon { width: 30px; height: 30px; border-radius: 50% 50% 45% 45%; display: grid; place-items: center; color: white; background: var(--mint-dark); font-weight: 900; }
+.security-note strong { font-size: 13px; }
+.security-note p { margin: 3px 0 0; color: #587069; font-size: 12px; }
+.security-note button { border: 0; background: transparent; color: #526862; font-size: 22px; }
+
+.vault-layout { min-height: 610px; border: 1px solid var(--line); display: grid; grid-template-columns: minmax(320px, 38%) minmax(420px, 1fr); background: var(--white); box-shadow: var(--shadow); }
+.record-browser { min-width: 0; border-right: 1px solid var(--line); }
+.search-row { padding: 16px; }
+.search-box { height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 2px; display: flex; align-items: center; gap: 8px; background: #050906; }
+.search-box:focus-within { border-color: var(--mint); background: #020403; }
+.search-box span { color: var(--muted); font-size: 21px; }
+.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 14px; }
+.record-list { border-top: 1px solid var(--line); }
+.record-item { width: 100%; min-height: 66px; border-bottom: 1px solid #102419; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; background: var(--white); }
+.record-item:hover { background: #0b160f; }
+.record-item.is-active { background: #071b11; box-shadow: inset 4px 0 var(--mint); }
+.record-main { min-width: 0; border: 0; padding: 13px 16px; color: inherit; background: transparent; text-align: left; }
+.record-text { min-width: 0; }
+.record-text strong, .record-text span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.record-text strong { font-size: 14px; }
+.record-text span { margin-top: 4px; color: var(--muted); font-size: 12px; }
+.reorder-controls { padding: 9px 10px 9px 0; display: grid; grid-template-columns: 30px 30px; align-content: center; gap: 5px; }
+.reorder-controls button { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 2px; color: var(--mint); background: #050906; }
+.reorder-controls button:hover:not(:disabled) { border-color: var(--mint); background: #092016; }
+.reorder-controls button:disabled { color: #3c5948; opacity: .45; cursor: not-allowed; }
+.empty-state { padding: 60px 20px; text-align: center; color: var(--muted); }
+.empty-state > span { display: block; font-size: 36px; }
+.empty-state strong { display: block; color: var(--ink); margin-top: 12px; }
+.empty-state p { font-size: 13px; }
+
+.detail-panel { min-width: 0; padding: clamp(24px, 4vw, 46px); background: #050806; }
+.detail-header { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.detail-header h2 { margin: 0; font-size: 23px; letter-spacing: -.02em; }
+.record-note { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+.empty-detail { min-height: 300px; display: grid; place-content: center; color: var(--muted); text-align: center; }
+.empty-detail strong { color: var(--ink); }
+.empty-detail p { margin: 8px 0 0; font-size: 13px; }
+.detail-section { padding: 24px 0; border-bottom: 1px solid var(--line); }
+.section-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; color: var(--muted); font: 700 10px ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.section-label button { border: 0; background: transparent; color: var(--mint); font: 700 11px ui-sans-serif, sans-serif; }
+.value-box { min-height: 45px; padding: 0 12px; border: 1px solid var(--line); border-radius: 2px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #020403; }
+.value-box code { overflow: hidden; text-overflow: ellipsis; color: var(--ink); font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; white-space: nowrap; }
+.value-box button { border: 0; color: var(--mint); background: transparent; font-size: 12px; font-weight: 750; }
+.detail-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.detail-actions { padding-top: 24px; display: flex; gap: 10px; }
+
+.status-chip { width: fit-content; border: 1px solid var(--line); border-radius: 99px; padding: 5px 8px; color: var(--muted); background: #07130c; font: 700 10px ui-monospace, monospace; white-space: nowrap; }
+.status-chip.good { border-color: var(--mint-dark); color: var(--mint); background: #06170d; }
+.status-chip.warn { border-color: #7c5c18; color: #ffd24d; background: #181205; }
+.status-chip span { display: inline-block; width: 6px; height: 6px; margin-right: 4px; border-radius: 50%; background: #4b9b70; }
+
+
+.settings-grid { width: min(100%, 1040px); margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); align-items: start; gap: 14px; }
+.settings-column { min-width: 0; display: grid; align-content: start; gap: 14px; }
+.settings-card { padding: 20px; border: 1px solid var(--line); background: var(--white); }
+.card-title { min-height: 38px; margin-bottom: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.card-title strong, .card-title p { display: block; }
+.card-title strong { font-size: 14px; }
+.card-title p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+.settings-card > label, .modal label { display: block; margin-top: 13px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.settings-card input, .settings-card select, .modal input, .modal select, .modal textarea { width: 100%; min-height: 42px; margin-top: 7px; border: 1px solid var(--line); border-radius: 2px; padding: 9px 11px; color: var(--ink); background: #020403; font-size: 14px; }
+.settings-card input:disabled { color: #66806f; background: #071009; }
+.input-with-action { display: grid; grid-template-columns: 1fr auto; margin-top: 7px; }
+.input-with-action input { margin: 0; border-radius: 7px 0 0 7px; }
+.input-with-action button { min-width: 66px; border: 1px solid var(--line); border-left: 0; border-radius: 0 2px 2px 0; color: var(--mint); background: #07130c; font-size: 12px; font-weight: 750; }
+.settings-card .full { margin-top: 18px; }
+.choice-group { margin: 16px 0 0; padding: 0; border: 0; }
+.choice-group legend { margin-bottom: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.radio-option { min-height: 58px; margin-top: 7px; border: 1px solid var(--line); padding: 10px 12px; display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: center; background: #050906; }
+.radio-option:has(input:checked) { border-color: var(--mint); background: #071b11; }
+.radio-option input { width: 16px; min-height: 16px; margin: 0; accent-color: var(--mint); }
+.radio-option strong, .radio-option small { display: block; }
+.radio-option strong { color: var(--ink); font-size: 13px; }
+.radio-option small { margin-top: 3px; color: var(--muted); font-size: 11px; font-weight: 500; }
+.settings-card output { float: right; color: var(--ink); font: 700 12px ui-monospace, monospace; }
+input[type="range"] { padding: 0; accent-color: var(--mint-dark); }
+.setting-row { min-height: 56px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.setting-row strong { font-size: 13px; }
+.setting-row p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+.switch { width: 40px; height: 23px; padding: 2px; border: 0; border-radius: 99px; background: #244331; }
+.switch span { display: block; width: 19px; height: 19px; border-radius: 50%; background: var(--ink); transition: .2s; }
+.switch.is-on { background: var(--forest-2); }
+.switch.is-on span { transform: translateX(17px); background: var(--mint); }
+.device-home-preview { min-height: 112px; margin-top: 16px; border: 1px solid var(--mint-dark); padding: 16px; display: flex; flex-direction: column; justify-content: center; gap: 6px; color: var(--ink); background: #000; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.device-home-preview small { color: var(--mint); letter-spacing: .12em; }
+.device-home-preview strong { font-size: 18px; }
+.device-home-preview span { color: var(--muted); font-size: 12px; }
+.action-help { margin: 8px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.danger-button { min-height: 42px; border: 1px solid var(--orange); border-radius: 2px; padding: 0 16px; color: var(--orange); background: transparent; font-weight: 750; }
+.danger-button:hover { color: #120404; background: var(--orange); }
+.danger-copy { color: #d98989; }
+
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; padding: 24px; display: grid; place-items: center; background: rgba(3, 19, 15, .72); backdrop-filter: blur(6px); }
+.modal-backdrop[hidden] { display: none; }
+.modal { width: min(640px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; padding: 28px; border: 1px solid var(--line); background: var(--white); box-shadow: 0 30px 90px rgba(0,0,0,.55); }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; }
+.modal h2, .approval-modal h2 { margin: 0; font-size: 25px; letter-spacing: -.03em; }
+.modal label small { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; font-weight: 500; }
+.modal-actions { margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 12px; }
+.text-button { border: 0; padding: 10px; color: #53635f; background: transparent; font-size: 13px; font-weight: 700; }
+
+.approval-modal { width: min(760px, 100%); display: grid; grid-template-columns: 43% 57%; color: white; background: var(--forest); box-shadow: 0 30px 90px rgba(0,0,0,.5); overflow: hidden; }
+.approval-device { min-height: 430px; padding: 44px; display: grid; place-items: center; background: radial-gradient(circle at center, #24473e, #102a24 55%, #0a211c); }
+.mini-screen { width: 184px; height: 245px; padding: 28px 18px; border: 7px solid #050d0b; border-radius: 17px; display: flex; flex-direction: column; align-items: center; text-align: center; background: #07100e; box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.mini-screen small { color: #708f86; font: 10px ui-monospace, monospace; }
+.mini-screen strong { margin: auto 0; color: var(--mint); font: 18px/1.35 ui-monospace, monospace; }
+.mini-screen span { border: 1px solid #50675f; padding: 8px 10px; color: #dbe9e5; font: 9px ui-monospace, monospace; }
+.device-buttons { margin-top: -88px; margin-left: 235px; display: grid; gap: 7px; }
+.device-buttons i { width: 8px; height: 22px; border-radius: 0 3px 3px 0; background: #536d65; }
+.approval-copy { padding: 48px 42px; }
+.approval-kicker { color: var(--mint); font: 700 10px ui-monospace, monospace; letter-spacing: .13em; text-transform: uppercase; }
+.approval-kicker i { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--mint); animation: pulse 1.4s infinite; }
+.approval-copy h2 { margin-top: 22px; font-size: 30px; }
+.approval-copy p { margin: 13px 0 30px; color: #94aaa4; font-size: 13px; line-height: 1.7; }
+.approval-timer { height: 3px; background: #29433c; overflow: hidden; }
+.approval-timer span { display: block; width: 100%; height: 100%; background: var(--mint); transform-origin: left; }
+.approval-meta { margin-top: 9px; display: flex; justify-content: space-between; color: #718b84; font-size: 10px; }
+.approval-meta strong { color: #dce9e5; font: 700 11px ui-monospace, monospace; }
+.approval-copy .text-button { display: block; width: 100%; margin-top: 28px; color: #a4b7b2; border: 1px solid #365047; }
+.demo-approve { width: 100%; margin-top: 8px; border: 0; padding: 9px; color: #718b84; background: transparent; font-size: 10px; text-decoration: underline; }
+
+.toast-region { position: fixed; right: 24px; bottom: 24px; z-index: 80; display: grid; gap: 9px; }
+.toast { min-width: 260px; padding: 13px 15px; border-left: 4px solid var(--mint); color: white; background: var(--forest); box-shadow: var(--shadow); font-size: 13px; animation: toast-in .25s ease; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(10px); } }
+
+@media (max-width: 1000px) {
+  .app-shell { grid-template-columns: 190px minmax(0, 1fr); }
+  .sidebar { width: 190px; padding-inline: 14px; }
+  .brand > span:last-child { display: none; }
+  .brand { justify-content: center; padding: 0; }
+  .nav-item { padding-inline: 12px; font-size: 14px; }
+  .project-meta { display: none; }
+  .sidebar-lock { min-height: 54px; padding: 8px; }
+  .main-content { grid-column: 2; }
+}
+
+@media (max-width: 900px) and (min-width: 761px) {
+  .settings-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .app-shell { display: block; }
+  .sidebar { width: min(280px, 85vw); transform: translateX(-102%); transition: transform .25s ease; box-shadow: 20px 0 60px rgba(0,0,0,.25); }
+  .sidebar.is-open { transform: none; }
+  .nav-scrim { position: fixed; inset: 0; z-index: 19; border: 0; display: block; background: rgba(0,0,0,.62); }
+  .nav-scrim[hidden] { display: none; }
+  body.menu-open { overflow: hidden; }
+  .brand > span:last-child { display: block; }
+  .nav-item { display: block; padding-inline: 12px; font-size: 14px; }
+  .project-meta { display: grid; }
+  .sidebar-lock { min-height: 58px; grid-template-columns: auto 1fr; padding: 10px 12px; text-align: left; }
+  .sidebar-lock > span:last-child { display: block; }
+  .main-content { width: 100%; }
+  .topbar { height: 62px; padding: 0 16px; gap: 10px; }
+  .mobile-menu { display: block; }
+  .connection-copy small, .topbar .icon-button { display: none; }
+  .session-time { margin-left: auto; }
+  .session-time small { display: none; }
+  .view { padding: 24px 16px 36px; }
+  .page-heading { top: 62px; margin: -24px -16px 0; padding: 24px 16px 16px; align-items: flex-end; }
+  .page-heading p:not(.eyebrow) { max-width: 260px; }
+  .security-note { grid-template-columns: 30px 1fr auto; }
+  .security-note p { display: none; }
+  .vault-layout { display: block; min-height: 0; }
+  .record-browser { border-right: 0; }
+  .record-item.is-active { background: var(--white); box-shadow: none; }
+  .record-item.is-active:hover { background: #0b160f; }
+  .detail-panel { display: none; }
+  .detail-panel.mobile-visible { display: block; position: fixed; inset: 62px 0 0; z-index: 15; overflow-y: auto; }
+  .detail-panel.mobile-visible::before { content: "← 返回密码库"; display: block; margin-bottom: 22px; color: var(--mint); font-size: 13px; font-weight: 750; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .approval-modal { grid-template-columns: 1fr; max-height: calc(100vh - 30px); overflow-y: auto; }
+  .approval-device { min-height: 260px; padding: 25px; }
+  .mini-screen { width: 124px; height: 172px; padding: 16px 10px; }
+  .mini-screen strong { font-size: 13px; }
+  .device-buttons { margin: -70px 0 0 160px; }
+  .approval-copy { padding: 30px 25px; }
+}
+
+#autoLockSelect {
+  appearance: none;
+  padding-right: 42px;
+  background-image: linear-gradient(45deg, transparent 50%, #79a98c 50%), linear-gradient(135deg, #79a98c 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 480px) {
+  .page-heading { display: block; }
+  .page-heading .primary-button { margin-top: 20px; width: 100%; }
+  .detail-columns { grid-template-columns: 1fr; }
+  .modal-backdrop { padding: 10px; }
+  .modal { padding: 22px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+  <script>(function(){
+  window.__cipherportReady=false;
+  function report(message){
+    var old=document.getElementById("cipherport-startup-error");if(old)return;
+    var item=document.createElement("div");item.id="cipherport-startup-error";
+    item.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;padding:12px;background:#7b1d1d;color:white;font:14px sans-serif";
+    item.textContent=message;(document.body||document.documentElement).appendChild(item);
+  }
+  window.addEventListener("error",function(event){if(!window.__cipherportReady&&event&&event.message){report("Web Manager failed to start: "+event.message+". Reload this page.");}});
+  try{var request=new XMLHttpRequest();request.open("POST","/api/session/connect",true);request.send(null);}catch(error){}
+  window.addEventListener("load",function(){setTimeout(function(){if(!window.__cipherportReady)report("Web Manager failed to start. Reload this page.");},10000);});
+})();</script>
+</head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <a class="brand" href="#" aria-label="CipherPort Admin 首页">
+          <img class="brand-logo" src="./assets/cipherport-logo.png" alt="" aria-hidden="true" />
+          <span><strong>CIPHERPORT</strong><small>PASSWORD MANAGER</small></span>
+        </a>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-view="vault">密码库</button>
+          <button class="nav-item" data-view="settings">设备设置</button>
+        </nav>
+
+        <div class="project-meta">
+          <span class="project-label">GitHub Repository</span>
+          <a href="https://github.com/Bichuntea/CipherPort" target="_blank" rel="noopener noreferrer">github.com/Bichuntea/CipherPort</a>
+          <span>Author · Bichuntea</span>
+          <span>Version · 1.0</span>
+        </div>
+        <button class="sidebar-lock" id="lockButton"><span class="lock-kicker">LOCK</span><span><strong>锁定并断开</strong><small>立即结束管理会话</small></span></button>
+      </aside>
+      <button class="nav-scrim" id="navScrim" aria-label="关闭导航" hidden></button>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" id="menuButton" aria-label="打开导航" aria-expanded="false">☰</button>
+          <div class="connection-copy">
+            <span class="pulse-dot"></span>
+            <span><strong>安全会话已连接</strong><small>仅限当前设备</small></span>
+          </div>
+          <button class="session-time" id="extendSession" title="点击延长 5 分钟" aria-label="延长管理会话 5 分钟"><small>会话剩余</small><strong id="sessionClock">05:00</strong><span>+5 分钟</span></button>
+          <button class="icon-button" id="helpButton" aria-label="连接与安全说明" title="连接与安全说明">?</button>
+        </header>
+
+        <section class="view is-active" id="view-vault" aria-labelledby="vaultTitle">
+          <div class="page-heading">
+            <div><p class="eyebrow" id="recordCount">0 PASSWORDS</p><h1 id="vaultTitle">CipherPort Admin</h1><p>记录仅保存在这台 AI Passport 上。</p></div>
+            <button class="primary-button" id="addButton"><span>＋</span>新增记录</button>
+          </div>
+
+          <div class="security-note"><span class="shield-icon">✓</span><div><strong>浏览器不会保存密码库</strong><p>修改会暂存在设备内存中，并等待你在设备上按 OK 后写入。</p></div><button id="dismissNote" aria-label="关闭提示">×</button></div>
+
+          <div class="vault-layout">
+            <section class="record-browser" aria-label="密码记录">
+              <div class="search-row">
+                <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索名称、备注或用户名" autocomplete="off" /></label>
+              </div>
+              <div class="record-list" id="recordList"></div>
+              <div class="empty-state" id="emptyState" hidden><span>⌕</span><strong>没有匹配的记录</strong><p>换一个关键词或清除筛选。</p></div>
+            </section>
+
+            <section class="detail-panel" id="detailPanel" aria-label="记录详情"></section>
+          </div>
+        </section>
+
+        <section class="view" id="view-settings" aria-labelledby="settingsTitle">
+          <div class="page-heading"><div><p class="eyebrow">DEVICE CONFIGURATION</p><h1 id="settingsTitle">设备设置</h1><p>涉及连接或数据的变更仍需设备端确认。</p></div></div>
+          <div class="settings-grid">
+            <div class="settings-column">
+            <article class="settings-card settings-card-network">
+              <div class="card-title"><div><strong>管理网络</strong><p>临时 SoftAP，仅允许一台客户端</p></div><span class="status-chip good">运行中</span></div>
+              <label>网络名称<input value="CIPHERPORT" disabled /></label>
+              <label>管理地址<div class="input-with-action"><input id="ipInput" value="设备屏幕显示" disabled /><button data-copy="测试地址">复制</button></div></label>
+              <label>Wi-Fi 密码策略<input value="每次进入管理界面生成新的 8 位数字密码" disabled /></label>
+            </article>
+            <article class="settings-card">
+              <div class="card-title"><div><strong>显示与安全</strong><p>敏感内容的可见时间</p></div></div>
+              <label>密码显示时长 <output id="revealOutput">15 秒</output><input id="revealRange" type="range" min="5" max="30" step="5" value="15" /></label>
+              <div class="setting-row"><div><strong>全按键提示音</strong><p>UP、DOWN、OK 的每次按键都会提示</p></div><button class="switch is-on" id="keySoundSwitch" role="switch" aria-checked="true" aria-label="全按键提示音"><span></span></button></div>
+              <label>自动锁定时间<select id="autoLockSelect"><option value="30">30 秒</option><option value="60">1 分钟</option><option value="120" selected>2 分钟</option><option value="300">5 分钟</option></select></label>
+              <button class="secondary-button full" id="saveDisplay">保存显示设置</button>
+            </article>
+            </div>
+            <div class="settings-column">
+            <article class="settings-card">
+              <div class="card-title"><div><strong>设备首页</strong><p>管理设备欢迎页显示的内容</p></div></div>
+              <label>首页标题<input id="homeTitle" maxlength="24" value="PASSWORD MANAGER" /></label>
+              <label>首页说明<input id="homeSubtitle" maxlength="40" value="YOUR KEYS. YOUR CONTROL." /></label>
+              <div class="device-home-preview" aria-label="设备首页预览"><small>WELCOME</small><strong id="homePreviewTitle">PASSWORD MANAGER</strong><span id="homePreviewSubtitle">YOUR KEYS. YOUR CONTROL.</span></div>
+              <button class="secondary-button full" id="saveHome">保存首页内容</button>
+            </article>
+            <article class="settings-card">
+              <div class="card-title"><div><strong id="languageCardTitle">界面语言</strong><p id="languageCardHelp">网页和设备使用同一种语言。</p></div></div>
+              <label><span id="languageFieldLabel">语言</span><select id="webLanguageSelect"><option value="zh-CN">简体中文</option><option value="en">English</option></select></label>
+              <button class="secondary-button full" id="saveLanguage">保存语言</button>
+            </article>
+            <article class="settings-card security-actions-card">
+              <div class="card-title"><div><strong>安全操作</strong><p>PIN 与设备数据管理</p></div></div>
+              <button class="secondary-button full" id="changePin">在设备上修改 PIN</button>
+              <p class="action-help">PIN 始终在设备上输入，浏览器不会读取或保存。</p>
+              <button class="danger-button full" id="clearData">清除设备全部数据</button>
+              <p class="action-help danger-copy">清除密码库和设置，需要在设备上再次确认。</p>
+            </article>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="editorModal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+        <div class="modal-header"><div><p class="eyebrow">STAGE ON DEVICE</p><h2 id="editorTitle">新增密码记录</h2></div><button class="icon-button modal-close" aria-label="关闭">×</button></div>
+        <form id="recordForm">
+          <label>名称<input name="name" required maxlength="32" placeholder="例如 GitHub" /></label>
+          <label>备注<input name="note" maxlength="96" placeholder="可选说明" /></label>
+          <label>用户名<input name="username" required maxlength="64" autocomplete="off" /></label>
+          <label>密码<div class="input-with-action"><input id="passwordInput" name="password" required maxlength="96" autocomplete="new-password" /><button type="button" id="generatePassword">生成</button></div><small id="passwordStrength">输入或生成一个强密码</small></label>
+          <div class="modal-actions"><button type="button" class="text-button modal-close">取消</button><button type="submit" class="primary-button">发送到设备确认</button></div>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="approvalModal" hidden>
+      <section class="approval-modal" role="dialog" aria-modal="true" aria-labelledby="approvalTitle">
+        <div class="approval-device"><div class="mini-screen"><small>确认写入</small><strong id="approvalDeviceName">新增 GitHub</strong><span>短按 OK 确认</span></div><div class="device-buttons"><i></i><i></i><i></i></div></div>
+        <div class="approval-copy"><span class="approval-kicker"><i></i>等待实体确认</span><h2 id="approvalTitle">请在设备上按 OK</h2><p id="approvalDescription">网页提交的内容正在设备内存中等待确认。超时或断开连接后将自动丢弃。</p><div class="approval-timer"><span id="approvalProgress"></span></div><div class="approval-meta"><span>草稿不会写入浏览器</span><strong id="approvalClock">00:60</strong></div><button class="text-button" id="cancelApproval">取消本次操作</button><button class="demo-approve" id="demoApprove">原型演示：模拟设备 OK</button></div>
+      </section>
+    </div>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+<script>(() => {
+  "use strict";
+
+  let sessionToken = "";
+
+  class DeviceApiError extends Error {
+    constructor(message, status = 0, payload = null) {
+      super(message);
+      this.name = "DeviceApiError";
+      this.status = status;
+      this.payload = payload;
+    }
+  }
+
+  async function request(path, options = {}) {
+    const headers = new Headers(options.headers || {});
+    if (sessionToken) headers.set("X-Session-Token", sessionToken);
+    const fetchOptions = Object.assign({}, options, {
+      headers: headers,
+      cache: "no-store",
+      credentials: "same-origin",
+    });
+    const response = await fetch(path, fetchOptions);
+
+    const contentType = response.headers.get("content-type") || "";
+    const payload = contentType.includes("application/json")
+      ? await response.json()
+      : await response.text();
+
+    if (!response.ok) {
+      throw new DeviceApiError(`Device request failed (${response.status})`, response.status, payload);
+    }
+    return payload;
+  }
+
+  async function getSession() {
+    const session = await request("/api/session");
+    if (session && session.status === "authorized" && typeof session.token === "string") {
+      sessionToken = session.token;
+    }
+    return session;
+  }
+
+  function normalizeAccount(account, fallbackIndex) {
+    return {
+      id: Number.isInteger(account.index) ? account.index : fallbackIndex,
+      index: Number.isInteger(account.index) ? account.index : fallbackIndex,
+      name: String(account.platform || ""),
+      note: String(account.note || account.url || ""),
+      username: String(account.username || ""),
+      password: String(account.password || ""),
+    };
+  }
+
+  window.CipherPortDeviceApi = Object.freeze({
+    DeviceApiError,
+    isDeviceHost: () => true,
+    connect: () => request("/api/session/connect", { method: "POST" }),
+    getSession,
+    disconnect: async () => {
+      try {
+        return await request("/api/session/disconnect", { method: "POST" });
+      } finally {
+        sessionToken = "";
+      }
+    },
+    clearSession: () => { sessionToken = ""; },
+    listRecords: async () => {
+      const payload = await request("/api/accounts");
+      return (payload.accounts || []).map(normalizeAccount);
+    },
+    stageMutation: (mutation) => request("/api/mutations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(mutation),
+    }),
+    getMutationStatus: () => request("/api/mutations/status"),
+    getWelcome: () => request("/api/settings/welcome"),
+    getDisplaySettings: () => request("/api/settings/display"),
+    getLanguage: () => request("/api/settings/language"),
+    updateWelcome: (message) => request("/api/settings/welcome", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }),
+    updateDisplaySettings: (settings) => request("/api/settings/display", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    }),
+    updateLanguage: (language) => request("/api/settings/language", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language }),
+    }),
+    requestPinChange: () => request("/api/actions/change-pin", { method: "POST" }),
+    requestClearData: () => request("/api/actions/clear-data", { method: "POST" }),
+  });
+})();
+</script>
+<script>const deviceApi = window.CipherPortDeviceApi;
+const deviceMode = Boolean(deviceApi && deviceApi.isDeviceHost && deviceApi.isDeviceHost());
+const records = [];
+
+let selectedId = deviceMode ? 0 : 1;
+let approvalTimer = null;
+let mutationPoll = null;
+let sessionSeconds = 300;
+let sessionEnded = false;
+let revealTimer = null;
+let pendingAction = null;
+let webLanguage = localStorage.getItem("cipherport-language") === "en" ? "en" : "zh-CN";
+
+const STATIC_EN = Object.freeze({
+  "锁定并断开": "Lock and disconnect", "立即结束管理会话": "End management session now",
+  "浏览器不会保存密码库": "The browser does not store the vault",
+  "修改会暂存在设备内存中，并等待你在设备上按 OK 后写入。": "Changes wait in device memory until you press OK on the device.",
+  "换一个关键词或清除筛选。": "Try another keyword or clear the filter.",
+  "涉及连接或数据的变更仍需设备端确认。": "Connection and data changes still require device confirmation.",
+  "管理网络": "Management network", "运行中": "Running",
+  "15 秒": "15 seconds", "30 秒": "30 seconds", "1 分钟": "1 minute", "2 分钟": "2 minutes", "5 分钟": "5 minutes",
+  "简体中文": "Simplified Chinese", "新增密码记录": "Add password record", "输入或生成一个强密码": "Enter or generate a strong password",
+  "确认写入": "Confirm write", "新增 GitHub": "Add GitHub", "短按 OK 确认": "Press OK to confirm",
+  "网页提交的内容正在设备内存中等待确认。超时或断开连接后将自动丢弃。": "The submitted data awaits confirmation in device memory and is discarded on timeout or disconnect.",
+  "草稿不会写入浏览器": "Draft is not stored in the browser", "原型演示：模拟设备 OK": "Prototype demo: simulate device OK",
+  "密码库": "Vault", "设备设置": "Device Settings", "安全会话已连接": "Secure session connected",
+  "仅限当前设备": "Current device only", "会话剩余": "Session remaining", "+5 分钟": "+5 min",
+  "记录仅保存在这台 AI Passport 上。": "Records stay on this AI Passport.", "新增记录": "Add Record",
+  "敏感操作会保留在设备内": "Sensitive operations stay on device",
+  "修改或删除先暂存在设备内存中，并等待你在设备上按 OK 后写入。": "Changes wait in device memory until you press OK on the device.",
+  "没有匹配的记录": "No matching records", "换一个关键词或清空筛选。": "Try another keyword or clear the filter.",
+  "设备配置": "Device Configuration", "涉及连接和数据的变更需要设备上确认。": "Connection and data changes require device confirmation.",
+  "网络管理": "Network Management", "临时 SoftAP，仅允许一台客户端": "Temporary SoftAP; one client only", "已连接": "Connected",
+  "网络名称": "Network name", "管理地址": "Management address", "设备屏幕显示": "Shown on device", "复制": "Copy",
+  "Wi-Fi 密码策略": "Wi-Fi password policy", "每次进入管理模式生成新的 8 位数字密码": "A new 8-digit password is generated for each management session",
+  "显示与安全": "Display & Security", "敏感内容的可见时间": "Sensitive content visibility", "密码显示时长": "Password reveal time",
+  "全按键提示音": "Key sounds", "UP、DOWN、OK 的每次按键都会提示": "Sound on every UP, DOWN and OK press",
+  "自动锁定时间": "Auto-lock time", "保存显示设置": "Save Display Settings", "设备首页": "Device Home",
+  "管理设备欢迎页显示的内容": "Manage the message shown on the device home screen", "首页标题": "Home title", "首页说明": "Home subtitle",
+  "保存首页内容": "Save Home Content", "界面语言": "Interface Language", "网页和设备使用同一种语言。": "The web manager and device use the same language.",
+  "语言": "Language", "保存语言": "Save Language", "安全操作": "Security Actions", "PIN 与设备数据管理": "PIN and device data management",
+  "在设备上修改 PIN": "Change PIN on Device", "PIN 始终在设备上输入，浏览器不会读取或保存。": "PIN entry stays on the device; the browser never reads or stores it.",
+  "清除设备全部数据": "Clear All Device Data", "清除密码库和设置，需要在设备上再次确认。": "Clears the vault and settings after device confirmation.",
+  "新建密码记录": "New Password Record", "名称": "Name", "备注": "Note", "用户名": "Username", "密码": "Password", "生成": "Generate",
+  "取消": "Cancel", "发送到设备确认": "Send for Device Approval", "等待实体确认": "Waiting for physical approval",
+  "请在设备上按 OK": "Press OK on the device", "网页提交后会保留在设备内存中等待确认。超时或断开连接后自动清除。": "The request waits in device memory and is cleared on timeout or disconnect.",
+  "草稿不会写入密码库": "Draft is not written to the vault", "取消本次操作": "Cancel Operation", "保险库为空": "Vault is empty",
+  "新增记录后将在这里显示详细信息。": "Add a record to see its details here.", "新增记录后会在这里显示详细信息。": "Add a record to see its details here.",
+  "暂无备注": "No note", "密码 · 显示后 15 秒自动隐藏": "Password · hides 15 seconds after reveal",
+  "显示": "Reveal", "编辑记录": "Edit Record", "删除": "Delete", "关闭": "Close"
+});
+
+const ATTRIBUTE_EN = Object.freeze({
+  "主导航": "Main navigation", "CipherPort Admin 首页": "CipherPort Admin home",
+  "关闭导航": "Close navigation", "打开导航": "Open navigation",
+  "点击延长 5 分钟": "Click to extend by 5 minutes", "延长管理会话 5 分钟": "Extend management session by 5 minutes",
+  "连接与安全说明": "Connection and security help", "关闭提示": "Close message",
+  "密码记录": "Password records", "搜索名称、备注或用户名": "Search name, note, or username",
+  "记录详情": "Record details", "全按键提示音": "Key sounds", "设备首页预览": "Device home preview",
+  "关闭": "Close", "例如 GitHub": "For example, GitHub", "可选说明": "Optional note"
+});
+
+const textBindings = new WeakMap();
+const attributeBindings = new WeakMap();
+function translateSubtree(root = document.body) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const raw = node.nodeValue || "";
+    const trimmed = raw.trim();
+    let binding = textBindings.get(node);
+    if (!binding && STATIC_EN[trimmed]) {
+      const start = raw.indexOf(trimmed);
+      binding = { zh: trimmed, en: STATIC_EN[trimmed], prefix: raw.slice(0, start), suffix: raw.slice(start + trimmed.length) };
+      textBindings.set(node, binding);
+    }
+    if (binding) node.nodeValue = binding.prefix + (webLanguage === "en" ? binding.en : binding.zh) + binding.suffix;
+  }
+  for (const element of root.querySelectorAll("[placeholder], [aria-label], [title]")) {
+    let bindings = attributeBindings.get(element);
+    if (!bindings) { bindings = {}; attributeBindings.set(element, bindings); }
+    for (const attribute of ["placeholder", "aria-label", "title"]) {
+      const value = element.getAttribute(attribute);
+      if (!bindings[attribute] && ATTRIBUTE_EN[value]) bindings[attribute] = { zh: value, en: ATTRIBUTE_EN[value] };
+      if (bindings[attribute]) element.setAttribute(attribute, webLanguage === "en" ? bindings[attribute].en : bindings[attribute].zh);
+    }
+  }
+  document.documentElement.lang = webLanguage === "en" ? "en" : "zh-CN";
+  const languageSelect = document.querySelector("#webLanguageSelect");
+  if (languageSelect) languageSelect.value = webLanguage;
+}
+
+function setWebLanguage(language, persist = true) {
+  webLanguage = language === "en" ? "en" : "zh-CN";
+  if (persist) localStorage.setItem("cipherport-language", webLanguage);
+  translateSubtree();
+  if (document.querySelector("#recordList")) renderRecords();
+  const revealOutput = document.querySelector("#revealOutput");
+  const revealRange = document.querySelector("#revealRange");
+  if (revealOutput && revealRange) revealOutput.textContent = `${revealRange.value} ${webLanguage === "en" ? "sec" : "秒"}`;
+}
+
+const tr = (zh, en) => webLanguage === "en" ? en : zh;
+
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => Array.prototype.slice.call(root.querySelectorAll(selector));
+const escapeHtml = (value = "") => String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
+
+function filteredRecords() {
+  const term = $("#searchInput").value.trim().toLowerCase();
+  return records.filter((record) => {
+    const searchMatch = !term || [record.name, record.note, record.username].some((field) => field.toLowerCase().includes(term));
+    return searchMatch;
+  });
+}
+
+function renderRecords() {
+  const matches = filteredRecords();
+  const filtering = $("#searchInput").value.trim().length > 0;
+  $("#recordCount").textContent = `${records.length} ${records.length === 1 ? "PASSWORD" : "PASSWORDS"}`;
+  $("#recordList").innerHTML = matches.map((record) => `
+    <div class="record-item ${record.id === selectedId ? "is-active" : ""}">
+      <button class="record-main" data-record-id="${record.id}">
+        <span class="record-text"><strong>${escapeHtml(record.name)}</strong><span>${escapeHtml(record.note || "暂无备注")}</span></span>
+      </button>
+      <span class="reorder-controls" aria-label="${tr(`调整 ${escapeHtml(record.name)} 的设备显示顺序`, `Change display order of ${escapeHtml(record.name)}`)}">
+        <button data-move="-1" data-move-id="${record.id}" aria-label="${tr(`上移 ${escapeHtml(record.name)}`, `Move ${escapeHtml(record.name)} up`)}" ${filtering || records.indexOf(record) === 0 ? "disabled" : ""}>↑</button>
+        <button data-move="1" data-move-id="${record.id}" aria-label="${tr(`下移 ${escapeHtml(record.name)}`, `Move ${escapeHtml(record.name)} down`)}" ${filtering || records.indexOf(record) === records.length - 1 ? "disabled" : ""}>↓</button>
+      </span>
+    </div>`).join("");
+  $("#emptyState").hidden = matches.length > 0;
+  $$("[data-record-id]").forEach((button) => button.addEventListener("click", () => selectRecord(Number(button.dataset.recordId))));
+  $$("[data-move-id]").forEach((button) => button.addEventListener("click", () => moveRecord(Number(button.dataset.moveId), Number(button.dataset.move))));
+  translateSubtree($("#view-vault"));
+}
+
+function renderDetail() {
+  const record = records.find((item) => item.id === selectedId) || records[0];
+  if (!record) {
+    $("#detailPanel").innerHTML = `<div class="empty-detail"><strong>密码库为空</strong><p>新增记录后会在这里显示详细信息。</p></div>`;
+    translateSubtree($("#detailPanel"));
+    return;
+  }
+  $("#detailPanel").innerHTML = `
+    <div class="detail-header">
+      <div><h2>${escapeHtml(record.name)}</h2><p class="record-note">${escapeHtml(record.note || "暂无备注")}</p></div>
+    </div>
+    <div class="detail-section">
+      <div class="section-label"><span>用户名</span><button data-copy-value="${escapeHtml(record.username)}">复制</button></div>
+      <div class="value-box"><code>${escapeHtml(record.username)}</code></div>
+    </div>
+    <div class="detail-section">
+      <div class="section-label"><span>密码 · 显示后 15 秒自动隐藏</span><button id="revealPassword">显示</button></div>
+      <div class="value-box"><code id="passwordValue">••••••••••••••••</code><button id="copyPassword" disabled>复制</button></div>
+    </div>
+    <div class="detail-actions"><button class="secondary-button" id="editRecord">编辑记录</button><button class="text-button" id="deleteRecord">删除</button></div>`;
+
+  $("#revealPassword").addEventListener("click", () => revealPassword(record));
+  $("#copyPassword").addEventListener("click", () => copyText(record.password, tr("密码已复制，剪贴板内容请及时清除", "Password copied; clear the clipboard promptly")));
+  $("[data-copy-value]").addEventListener("click", (event) => copyText(event.currentTarget.dataset.copyValue, tr("用户名已复制", "Username copied")));
+  $("#editRecord").addEventListener("click", () => openEditor(record));
+  $("#deleteRecord").addEventListener("click", () => {
+    const index = deviceMode ? record.index
+      : records.findIndex((item) => item.id === record.id);
+    if (deviceMode) {
+      void stageDeviceMutation(`${tr("删除", "Delete")} ${record.name}`,
+        tr("请在设备上选择 APPROVE 或 CANCEL，然后短按 OK。", "Select APPROVE or CANCEL on the device, then press OK."),
+        { operation: "delete", index });
+    } else {
+      stageAction(`删除 ${record.name}`, "删除后仍需设备端按 OK，写入成功前旧记录保持有效。", () => {
+        records.splice(index, 1); selectedId = records[0] ? records[0].id : 0; renderRecords(); renderDetail();
+      });
+    }
+  });
+  translateSubtree($("#detailPanel"));
+}
+
+function moveRecord(id, direction) {
+  const from = records.findIndex((record) => record.id === id);
+  const to = from + direction;
+  if (from < 0 || to < 0 || to >= records.length) return;
+  const record = records[from];
+  selectedId = id;
+  stageAction(`调整 ${record.name} 的顺序`, `将在设备密码库中把这条记录${direction < 0 ? "上移" : "下移"}一位。短按设备 OK 后写入。`, () => {
+    const [moved] = records.splice(from, 1);
+    records.splice(to, 0, moved);
+    renderRecords();
+    renderDetail();
+  });
+}
+
+async function loadDeviceRecords() {
+  const fresh = await deviceApi.listRecords();
+  records.splice(0, records.length, ...fresh);
+  if (!records.some((record) => record.id === selectedId)) selectedId = records[0] ? records[0].id : 0;
+  renderRecords();
+  renderDetail();
+}
+
+async function stageDeviceMutation(title, description, payload) {
+  pendingAction = null;
+  $("#approvalDeviceName").textContent = title;
+  $("#approvalDescription").textContent = description;
+  $("#approvalModal").hidden = false;
+  $("#demoApprove").hidden = true;
+  $("#cancelApproval").textContent = tr("隐藏提示", "Hide prompt");
+  try {
+    await deviceApi.stageMutation(payload);
+  } catch (_) {
+    $("#approvalModal").hidden = true;
+  toast(tr("请求发送失败，请先完成设备上的待处理操作", "Request failed. Finish the pending operation on the device first."));
+    return;
+  }
+  clearInterval(mutationPoll);
+  mutationPoll = setInterval(async () => {
+    try {
+      const result = await deviceApi.getMutationStatus();
+      if (result.status === "pending" || result.status === "none") return;
+      clearInterval(mutationPoll);
+      $("#approvalModal").hidden = true;
+      if (result.status === "approved") {
+        await loadDeviceRecords();
+        toast(tr("设备已确认并安全写入", "Device approved and saved securely"));
+      } else if (result.status === "denied") {
+        toast(tr("设备已取消本次操作", "Device canceled this operation"));
+      } else {
+        toast(tr("写入失败，原数据保持不变", "Write failed; original data is unchanged"));
+      }
+    } catch (_) {
+      $("#approvalDescription").textContent = tr("连接暂时中断，正在自动重连。请保持此页面打开。", "Connection interrupted. Reconnecting; keep this page open.");
+    }
+  }, 700);
+}
+
+async function connectDevice() {
+  try {
+    const language = await deviceApi.getLanguage();
+    setWebLanguage(language.language);
+  } catch (_) {}
+  const managementAddress = window.location.origin;
+  $("#ipInput").value = managementAddress;
+  const addressCopy = $("[data-copy]");
+  if (addressCopy) addressCopy.dataset.copy = managementAddress;
+  $("#approvalDeviceName").textContent = tr("授权 Web Management", "Authorize Web Management");
+  $("#approvalDescription").textContent = tr("请在设备上短按 OK。此页面会在授权后自动载入密码库。", "Press OK on the device. The vault loads automatically after authorization.");
+  $("#approvalModal").hidden = false;
+  $("#demoApprove").hidden = true;
+  $("#cancelApproval").hidden = true;
+  try { await deviceApi.connect(); } catch (_) {}
+  for (let attempt = 0; attempt < 150; attempt += 1) {
+    try {
+      const session = await deviceApi.getSession();
+      if (session.status === "authorized") {
+        $("#approvalModal").hidden = true;
+        $("#cancelApproval").hidden = false;
+        await loadDeviceRecords();
+        try {
+          const language = await deviceApi.getLanguage();
+          setWebLanguage(language.language);
+        } catch (_) {}
+        try {
+          const welcome = await deviceApi.getWelcome();
+          const lines = String(welcome.message || "").split("\n");
+          $("#homeTitle").value = lines.shift() || "PASSWORD MANAGER";
+          $("#homeSubtitle").value = lines.join(" ") || "YOUR KEYS. YOUR CONTROL.";
+        } catch (_) {}
+        try {
+          const display = await deviceApi.getDisplaySettings();
+          $("#autoLockSelect").value = String(display.autoLockSeconds || 120);
+          $("#revealRange").value = String(display.revealSeconds || 15);
+          $("#revealOutput").textContent = `${$("#revealRange").value} 秒`;
+          const keySound = $("#keySoundSwitch");
+          keySound.classList.toggle("is-on", Boolean(display.keySoundEnabled));
+          keySound.setAttribute("aria-checked", String(Boolean(display.keySoundEnabled)));
+        } catch (_) {}
+        return;
+      }
+    } catch (_) {}
+    await new Promise((resolve) => setTimeout(resolve, 800));
+  }
+          $("#approvalDescription").textContent = tr("授权等待已超时，请退出后重新进入 Web Management。", "Authorization timed out. Exit and reopen Web Management.");
+}
+
+function selectRecord(id) {
+  selectedId = id;
+  renderRecords();
+  renderDetail();
+  if (window.innerWidth <= 760) $("#detailPanel").classList.add("mobile-visible");
+}
+
+function revealPassword(record) {
+  const value = $("#passwordValue");
+  const button = $("#revealPassword");
+  const copy = $("#copyPassword");
+  clearTimeout(revealTimer);
+  value.textContent = record.password;
+  copy.disabled = false;
+  let left = 15;
+  button.textContent = tr(`隐藏 ${left}s`, `Hide ${left}s`);
+  const interval = setInterval(() => { left -= 1; button.textContent = left > 0 ? tr(`隐藏 ${left}s`, `Hide ${left}s`) : tr("显示", "Reveal"); }, 1000);
+  revealTimer = setTimeout(() => { clearInterval(interval); value.textContent = "••••••••••••••••"; copy.disabled = true; button.textContent = tr("显示", "Reveal"); }, 15000);
+  button.onclick = () => { clearInterval(interval); clearTimeout(revealTimer); renderDetail(); };
+}
+
+function openEditor(record = null) {
+  const form = $("#recordForm");
+  form.reset();
+  $("#editorTitle").textContent = record ? `${tr("编辑", "Edit")} ${record.name}` : tr("新增密码记录", "Add password record");
+  form.dataset.editId = record ? record.id : "";
+  if (record) {
+    ["name", "note", "username", "password"].forEach((key) => { if (form.elements[key]) form.elements[key].value = record[key] || ""; });
+  }
+  $("#editorModal").hidden = false;
+  setTimeout(() => form.elements.name.focus(), 20);
+}
+
+function closeEditor() { $("#editorModal").hidden = true; }
+
+function generatePassword() {
+  const groups = ["ABCDEFGHJKLMNPQRSTUVWXYZ", "abcdefghijkmnopqrstuvwxyz", "23456789", "!@#$%"];
+  const alphabet = groups.join("");
+  const sample = new Uint32Array(1);
+  const draw = (limit) => {
+    const cutoff = Math.floor(0x100000000 / limit) * limit;
+    do { crypto.getRandomValues(sample); } while (sample[0] >= cutoff);
+    return sample[0] % limit;
+  };
+  const characters = groups.map((group) => group[draw(group.length)]);
+  while (characters.length < 12) characters.push(alphabet[draw(alphabet.length)]);
+  for (let index = characters.length - 1; index > 0; index -= 1) {
+    const other = draw(index + 1);
+    [characters[index], characters[other]] = [characters[other], characters[index]];
+  }
+  $("#passwordInput").value = characters.join("");
+  $("#passwordStrength").textContent = tr("12 位随机密码 · 包含大小写、数字和符号", "12-character random password · letters, numbers, and symbols");
+}
+
+function stageAction(title, description, apply) {
+  pendingAction = apply;
+  $("#approvalDeviceName").textContent = title;
+  $("#approvalDescription").textContent = description;
+  $("#approvalModal").hidden = false;
+  let left = 60;
+  clearInterval(approvalTimer);
+  approvalTimer = setInterval(() => {
+    left -= 1;
+    $("#approvalClock").textContent = `00:${String(left).padStart(2, "0")}`;
+    $("#approvalProgress").style.transform = `scaleX(${left / 60})`;
+  if (left <= 0) cancelApproval(tr("确认已超时，内存草稿已丢弃", "Approval timed out; the in-memory draft was discarded"));
+  }, 1000);
+}
+
+function cancelApproval(message = tr("本次操作已取消，未写入设备", "Operation canceled; nothing was saved to the device")) {
+  clearInterval(approvalTimer);
+  $("#approvalModal").hidden = true;
+  pendingAction = null;
+  toast(message);
+}
+
+function approveAction() {
+  clearInterval(approvalTimer);
+  if (pendingAction) pendingAction();
+  pendingAction = null;
+  $("#approvalModal").hidden = true;
+  toast(tr("设备确认成功，已完成原子写入", "Device approved; write completed"));
+}
+
+function copyText(text, message) {
+  if (!navigator.clipboard || !navigator.clipboard.writeText) return toast(tr("浏览器未允许访问剪贴板", "Browser clipboard access is unavailable"));
+  navigator.clipboard.writeText(text).then(() => toast(message)).catch(() => toast(tr("浏览器未允许访问剪贴板", "Browser clipboard access is unavailable")));
+}
+
+function toast(message) {
+  const item = document.createElement("div");
+  item.className = "toast";
+  item.textContent = message;
+  $("#toastRegion").append(item);
+  setTimeout(() => item.remove(), 3500);
+}
+
+function navigate(view) {
+  $$(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
+  $$(".view").forEach((section) => section.classList.toggle("is-active", section.id === `view-${view}`));
+  setMenuOpen(false);
+}
+
+function setMenuOpen(open) {
+  $(".sidebar").classList.toggle("is-open", open);
+  $("#menuButton").setAttribute("aria-expanded", String(open));
+  $("#navScrim").hidden = !open;
+  document.body.classList.toggle("menu-open", open);
+}
+
+function updateWifiPasswordMode() {
+  const selected = $("input[name='wifiPasswordMode']:checked");
+  if (!selected) return;
+  const fixed = selected.value === "fixed";
+  const input = $("#wifiPassword");
+  const reveal = $("#wifiReveal");
+  input.disabled = !fixed;
+  reveal.disabled = !fixed;
+  if (!fixed) {
+    input.value = "";
+    input.type = "password";
+    reveal.textContent = "显示";
+  }
+}
+
+function registerWebMcpTools() {
+  const context = document.modelContext;
+  if (!context || !context.registerTool) return;
+  const tools = [
+    {
+      name: "search_vault_records", title: "搜索密码库记录", description: "按平台、网址或用户名筛选当前设备密码库列表，不返回密码。",
+      inputSchema: { type: "object", properties: { query: { type: "string", maxLength: 80 } }, required: ["query"], additionalProperties: false },
+      annotations: { readOnlyHint: true, untrustedContentHint: false },
+      execute({ query }) { $("#searchInput").value = String(query); navigate("vault"); renderRecords(); return { visibleRecordNames: filteredRecords().map((record) => record.name), count: filteredRecords().length }; },
+    },
+    {
+      name: "start_new_vault_record", title: "开始新增密码记录", description: "打开新增记录表单；不会保存或写入设备。",
+      inputSchema: { type: "object", properties: {}, additionalProperties: false },
+      annotations: { readOnlyHint: false, untrustedContentHint: false },
+      execute() { navigate("vault"); openEditor(); return { status: "editor_open", persistentWrite: false, deviceApprovalRequired: true }; },
+    },
+  ];
+  tools.forEach((tool) => { try { void Promise.resolve(context.registerTool(tool)).catch(() => {}); } catch (_) {} });
+}
+
+function initializeApp() {
+  if (window.__cipherportReady) return;
+  renderRecords(); renderDetail();
+  $$(".nav-item").forEach((item) => item.addEventListener("click", () => navigate(item.dataset.view)));
+  $("#searchInput").addEventListener("input", renderRecords);
+  $("#dismissNote").addEventListener("click", () => $(".security-note").remove());
+  $("#addButton").addEventListener("click", () => openEditor());
+  $$(".modal-close").forEach((button) => button.addEventListener("click", closeEditor));
+  $("#generatePassword").addEventListener("click", generatePassword);
+  $("#recordForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = {};
+    new FormData(form).forEach((value, key) => { values[key] = value; });
+    const editId = Number(form.dataset.editId);
+    closeEditor();
+    if (deviceMode) {
+      const existing = records.find((record) => record.id === editId);
+      const index = deviceMode ? (existing ? existing.index : 0) : records.findIndex((record) => record.id === editId);
+      void stageDeviceMutation(`${editId ? tr("更新", "Update") : tr("新增", "Add")} ${values.name}`,
+        tr("请核对设备屏幕上的记录名称，再选择 APPROVE 或 CANCEL。", "Check the record name on the device, then select APPROVE or CANCEL."),
+        { operation: editId ? "edit" : "add", index: Math.max(0, index),
+          platform: values.name, note: values.note || "", url: "",
+          username: values.username, password: values.password });
+    } else {
+      stageAction(`${editId ? "更新" : "新增"} ${values.name}`, "核对设备屏幕上的名称、用户名和密码长度，然后短按 OK 确认。", () => {
+        if (editId) Object.assign(records.find((record) => record.id === editId), values);
+        else { const item = Object.assign({}, values, { id: Date.now() }); records.unshift(item); selectedId = item.id; }
+        renderRecords(); renderDetail();
+      });
+    }
+  });
+  $("#cancelApproval").addEventListener("click", () => cancelApproval());
+  $("#demoApprove").addEventListener("click", approveAction);
+  $("#menuButton").addEventListener("click", () => setMenuOpen(!$(".sidebar").classList.contains("is-open")));
+  $("#navScrim").addEventListener("click", () => setMenuOpen(false));
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") setMenuOpen(false); });
+  window.addEventListener("resize", () => { if (window.innerWidth > 760) setMenuOpen(false); });
+  $("#detailPanel").addEventListener("click", (event) => { if (window.innerWidth <= 760 && event.target === $("#detailPanel")) $("#detailPanel").classList.remove("mobile-visible"); });
+  $("#lockButton").addEventListener("click", async () => {
+    let lockedLogo = "";
+    try {
+      const source = $(".brand-logo")?.currentSrc || $(".brand-logo")?.src || "./assets/cipherport-logo.png";
+      const response = await fetch(source, { cache: "force-cache" });
+      const blob = await response.blob();
+      lockedLogo = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (_) {}
+    if (deviceMode) { try { await deviceApi.disconnect(); } catch (_) {} }
+    document.body.innerHTML = `<main style="min-height:100vh;display:grid;place-items:center;padding:24px;color:#dbe9e5;background:#071b17;text-align:center"><div>${lockedLogo ? `<img src="${lockedLogo}" alt="CipherPort" style="display:block;width:88px;height:88px;margin:auto;object-fit:contain" />` : ""}<p style="margin:28px 0 8px;font:700 11px ui-monospace,monospace;letter-spacing:.14em;color:#00e889">SESSION CLOSED</p><h1 style="margin:0;font-size:32px">${tr("设备已锁定", "Device locked")}</h1><p style="color:#829a93">${tr("Wi-Fi 与网页会话已关闭。请在设备上重新开启管理模式。", "Wi-Fi and the web session are closed. Reopen management mode on the device.")}</p></div></main>`;
+  });
+  $("#helpButton").addEventListener("click", () => toast(tr("连接与安全说明：仅通过设备临时 Wi-Fi 访问；新增、编辑和删除必须在设备上按 OK；锁定或超时会立即断开会话。", "Use the device's temporary Wi-Fi. Add, edit, and delete require OK on the device. Lock or timeout ends the session.")));
+  $("#extendSession").addEventListener("click", () => {
+    sessionSeconds = Math.min(600, sessionSeconds + 300);
+    sessionEnded = false;
+    toast(sessionSeconds === 600 ? tr("会话已延长，最长保留 10 分钟", "Session extended to a maximum of 10 minutes") : tr("会话已延长 5 分钟", "Session extended by 5 minutes"));
+  });
+  $$("input[name='wifiPasswordMode']").forEach((input) => input.addEventListener("change", updateWifiPasswordMode));
+  $("#revealRange").addEventListener("input", (event) => $("#revealOutput").textContent = `${event.target.value} ${tr("秒", "sec")}`);
+  $$(".switch").forEach((button) => button.addEventListener("click", () => { const on = button.classList.toggle("is-on"); button.setAttribute("aria-checked", String(on)); }));
+  $("#saveDisplay").addEventListener("click", async () => {
+    if (deviceMode) {
+      try {
+        await deviceApi.updateDisplaySettings({
+          autoLockSeconds: Number($("#autoLockSelect").value),
+          revealSeconds: Number($("#revealRange").value),
+          keySoundEnabled: $("#keySoundSwitch").classList.contains("is-on"),
+        });
+        toast(tr(`显示设置已保存；设备闲置 ${$("#autoLockSelect").selectedOptions[0].textContent} 后安全锁定并关屏`, `Display settings saved; device locks and turns off the screen after ${$("#autoLockSelect").selectedOptions[0].textContent} idle`));
+      } catch (_) {
+        toast(tr("显示设置保存失败", "Failed to save display settings"));
+      }
+      return;
+    }
+    stageAction("更新显示设置", `自动锁定时间为 ${$("#autoLockSelect").selectedOptions[0].textContent}；短按设备 OK 后写入。`, () => toast("显示设置已更新"));
+  });
+  $("#webLanguageSelect").addEventListener("change", (event) => setWebLanguage(event.target.value, false));
+  $("#saveLanguage").addEventListener("click", async () => {
+    const selectedLanguage = $("#webLanguageSelect").value === "en" ? "en" : "zh-CN";
+    const savedLanguage = localStorage.getItem("cipherport-language") === "en" ? "en" : "zh-CN";
+    if (deviceMode) {
+      try {
+        await deviceApi.updateLanguage(selectedLanguage);
+        const readback = await deviceApi.getLanguage();
+        if (readback.language !== selectedLanguage) throw new Error("language verification failed");
+        setWebLanguage(selectedLanguage);
+        toast(tr("语言已保存并同步到设备", "Language saved and synchronized to the device"));
+      } catch (_) {
+        setWebLanguage(savedLanguage);
+        toast(tr("语言保存失败", "Failed to save language"));
+      }
+    } else {
+      setWebLanguage(selectedLanguage);
+      toast(tr("语言已保存", "Language saved"));
+    }
+  });
+  ["#homeTitle", "#homeSubtitle"].forEach((selector) => $(selector).addEventListener("input", () => {
+    $("#homePreviewTitle").textContent = $("#homeTitle").value || "PASSWORD MANAGER";
+    $("#homePreviewSubtitle").textContent = $("#homeSubtitle").value || "YOUR KEYS. YOUR CONTROL.";
+  }));
+  $("#saveHome").addEventListener("click", async () => {
+    if (deviceMode) {
+      try {
+        const expected = `${$("#homeTitle").value}\n${$("#homeSubtitle").value}`.trim();
+        await deviceApi.updateWelcome(expected);
+        const saved = await deviceApi.getWelcome();
+        if (String(saved.message || "") !== expected) throw new Error("welcome verification failed");
+        toast(tr("设备首页已更新", "Device home content updated"));
+      } catch (_) { toast(tr("首页内容保存失败", "Failed to save home content")); }
+    } else {
+      stageAction("更新设备首页", "设备将更新欢迎页标题和说明。短按设备 OK 后写入。", () => toast("设备首页已更新"));
+    }
+  });
+  $("#changePin").addEventListener("click", async () => {
+    if (deviceMode) {
+      try { await deviceApi.requestPinChange(); toast(tr("请在设备上完成 PIN 修改", "Complete the PIN change on the device")); }
+      catch (_) { toast(tr("无法启动 PIN 修改", "Could not start PIN change")); }
+    } else {
+      stageAction("修改 PIN", "请在设备上依次验证当前四位 PIN、输入新 PIN 并再次确认。PIN 不会传到浏览器。", () => toast("设备已进入修改 PIN 流程"));
+    }
+  });
+  $("#clearData").addEventListener("click", async () => {
+    if (deviceMode) {
+      try { await deviceApi.requestClearData(); toast(tr("请在设备上长按确认清除", "Long-press on the device to confirm erasure")); }
+      catch (_) { toast(tr("无法启动数据清除", "Could not start data erasure")); }
+    } else {
+      stageAction("清除全部数据", "这将永久清除密码库和设备设置。请在设备上完成最终确认。", () => {
+        records.splice(0, records.length);
+        selectedId = 0;
+        renderRecords();
+        renderDetail();
+        toast("演示数据已清除");
+      });
+    }
+  });
+  $$("[data-copy]").forEach((button) => button.addEventListener("click", () => copyText(button.dataset.copy, tr("管理地址已复制", "Management address copied"))));
+  setInterval(() => {
+    sessionSeconds = Math.max(0, sessionSeconds - 1);
+    $("#sessionClock").textContent = `${String(Math.floor(sessionSeconds / 60)).padStart(2, "0")}:${String(sessionSeconds % 60).padStart(2, "0")}`;
+    if (sessionSeconds === 0 && !sessionEnded) {
+      sessionEnded = true;
+      const lockButton = $("#lockButton");
+      if (lockButton) lockButton.click();
+    }
+  }, 1000);
+  updateWifiPasswordMode();
+  setWebLanguage(webLanguage);
+  registerWebMcpTools();
+  window.__cipherportReady = true;
+  if (deviceMode) void connectDevice();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+  initializeApp();
+}
+</script>
+  </body>
+</html>

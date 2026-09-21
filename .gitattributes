@@ -1,0 +1,27 @@
+* text=auto
+
+# Keep build, validation, and source files portable across Windows and CI.
+*.c text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.csv text eol=lf
+*.defaults text eol=lf
+*.lock text eol=lf
+CMakeLists.txt text eol=lf
+
+# Generated and visual assets must never be newline-normalized.
+*.bin binary
+*.gz binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.zip binary

@@ -1,0 +1,17 @@
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+node_modules/
+.next/
+.pnpm-store/
+.vinext/
+.vite/
+.wrangler/
+/dist/
+/github-upload/
+site-package.tar.gz
+__pycache__/
+*.pyc
+.vscode/
+.idea/
